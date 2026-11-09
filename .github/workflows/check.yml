@@ -1,0 +1,33 @@
+name: Cek Website
+
+# Berjalan otomatis setiap ada push ke branch utama atau pull request.
+# Hanya memeriksa kualitas website; tidak mengubah pengaturan GitHub Pages.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validasi-html:
+    name: Validasi HTML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validasi seluruh berkas HTML
+        run: npx --yes html-validate@8 "*.html"
+
+  lighthouse:
+    name: Lighthouse (performa, aksesibilitas, SEO)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Jalankan Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
