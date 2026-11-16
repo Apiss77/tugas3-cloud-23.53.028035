@@ -38,8 +38,7 @@ body {
   -webkit-font-smoothing: antialiased; overflow-x: hidden;
 }
 body::before {
-  content: ""; position: fixed; inset: -14%; z-index: -1; pointer-events: none; will-change: transform;
-  animation: drift 34s ease-in-out infinite alternate;
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: url("../images/latar-kaca.svg") center / cover no-repeat, var(--latar);
 }
 
@@ -66,8 +65,12 @@ ul, ol { list-style: none; }
     radial-gradient(340px circle at var(--mx, -400px) var(--my, -400px), rgba(111, 211, 255, 0.12), transparent 65%),
     linear-gradient(155deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.015) 38%, rgba(255, 255, 255, 0.04));
   border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius);
-  backdrop-filter: blur(30px) saturate(170%); -webkit-backdrop-filter: blur(30px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+.kaca .kaca {
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  background-color: rgba(10, 16, 30, 0.75);
 }
 
 /* ---------- Tombol + feedback ---------- */
@@ -197,7 +200,11 @@ ul, ol { list-style: none; }
 .aksi { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
 
 /* ---------- Bagian ---------- */
-.bagian { padding: 72px 0 0; }
+.bagian {
+  padding: 72px 0 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 650px;
+}
 .judul-bagian { margin-bottom: 28px; }
 .judul-bagian h2 { font-weight: 300; font-size: clamp(1.7rem, 3.6vw, 2.4rem); line-height: 1.15; letter-spacing: -0.025em; }
 .judul-bagian p { color: var(--redup); max-width: 560px; margin-top: 10px; font-size: 0.96rem; }
@@ -234,6 +241,11 @@ ul, ol { list-style: none; }
 }
 .skill-info::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--gradasi); box-shadow: 0 0 12px rgba(111, 211, 255, 0.7); }
 .skill-info b { color: #fff; font-weight: 600; }
+
+/* ---------- Kartu besar: containment untuk scroll mulus ---------- */
+.proyek, .karakter, .entri, .riwayat-item {
+  contain: layout paint;
+}
 
 /* ---------- Proyek ---------- */
 .proyek { display: flex; flex-direction: column; overflow: hidden; rotate: var(--tilt, 0 0 1 0deg); transition: rotate 0.2s ease-out, translate 0.35s var(--ease), transform 0.35s var(--ease), opacity 0.35s, filter 0.35s, border-color 0.35s, box-shadow 0.35s; }
@@ -516,7 +528,7 @@ a.baris-devlog:focus-visible { outline: 2px solid var(--aksen-2); outline-offset
 .navbar.scrolled .progres-scroll { opacity: 1; }
 .progres-scroll i {
   display: block; height: 100%; border-radius: 3px; background: var(--gradasi); box-shadow: 0 0 12px rgba(111, 211, 255, 0.85);
-  transform: scaleX(var(--p, 0)); transform-origin: left;
+  transform: scaleX(0); transform-origin: left; will-change: transform;
 }
 
 /* ---------- Tilt 3D kartu proyek ---------- */
@@ -673,11 +685,6 @@ a.baris-devlog:focus-visible { outline: 2px solid var(--aksen-2); outline-offset
 .galat-kartu h1 { font-size: 1.45rem; font-weight: 500; }
 .galat-kartu p { margin: 10px 0 22px; color: var(--teks-lembut); font-size: 0.95rem; }
 .poin code { padding: 1px 7px; border-radius: 6px; font-family: var(--font-mono); font-size: 0.8em; color: var(--aksen-2); background: rgba(255,255,255,.06); }
-
-@keyframes drift {
-  from { transform: translate3d(2%, -2%, 0) scale(1.02); }
-  to   { transform: translate3d(-2%, 2%, 0) scale(1.1); }
-}
 
 /* ---------- Peta tanggung jawab model layanan ---------- */
 .model-peta { margin-top: 24px; padding: 28px; }

@@ -202,7 +202,7 @@ document.addEventListener("pointermove", (e) => {
     el.style.setProperty("--mx", e.clientX - r.left + "px");
     el.style.setProperty("--my", e.clientY - r.top + "px");
   });
-});
+}, { passive: true });
 document.addEventListener("pointerout", (e) => {
   const el = e.target.closest && e.target.closest(".kaca");
   if (el && !el.contains(e.relatedTarget)) {
@@ -230,30 +230,40 @@ window.addEventListener("hashchange", bukaEntriDariHash);
 
 
 // ---- Progres scroll ----
+const progresScrollEl = document.querySelector(".progres-scroll i");
 function aturProgres() {
   const h = document.documentElement;
   const maks = h.scrollHeight - window.innerHeight;
   const p = maks > 0 ? Math.min(1, Math.max(0, window.scrollY / maks)) : 0;
-  h.style.setProperty("--p", p.toFixed(4));
+  if (progresScrollEl) {
+    progresScrollEl.style.transform = "scaleX(" + p + ")";
+  }
 }
 window.addEventListener("scroll", () => requestAnimationFrame(aturProgres), { passive: true });
 window.addEventListener("resize", aturProgres);
 aturProgres();
 
 // ---- Tilt 3D kartu proyek ----
+let rafTilt = 0;
 document.addEventListener("pointermove", (e) => {
   if (e.pointerType === "touch" || kurangiGerak.matches) return;
   const el = e.target.closest && e.target.closest(".proyek");
   if (!el) return;
-  const r = el.getBoundingClientRect();
-  const nx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-  const ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
-  const sudut = Math.min(1, Math.hypot(nx, ny)) * 6;
-  el.style.setProperty("--tilt", (-ny).toFixed(3) + " " + nx.toFixed(3) + " 0 " + sudut.toFixed(2) + "deg");
-});
+  cancelAnimationFrame(rafTilt);
+  rafTilt = requestAnimationFrame(() => {
+    const r = el.getBoundingClientRect();
+    const nx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    const ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    const sudut = Math.min(1, Math.hypot(nx, ny)) * 6;
+    el.style.setProperty("--tilt", (-ny).toFixed(3) + " " + nx.toFixed(3) + " 0 " + sudut.toFixed(2) + "deg");
+  });
+}, { passive: true });
 document.addEventListener("pointerout", (e) => {
   const el = e.target.closest && e.target.closest(".proyek");
-  if (el && !el.contains(e.relatedTarget)) el.style.removeProperty("--tilt");
+  if (el && !el.contains(e.relatedTarget)) {
+    cancelAnimationFrame(rafTilt);
+    el.style.removeProperty("--tilt");
+  }
 });
 
 // ---- Teks hero berganti (efek mengetik) ----
